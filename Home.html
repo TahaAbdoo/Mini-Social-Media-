@@ -20,6 +20,32 @@
     </style>
 </head>
 <body>
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Login</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Username</label>
+            <input type="text" class="form-control" id="UsernameInput">
+          </div>
+          <div class="mb-3">
+            <label for="message-text" class="col-form-label">Password</label>
+            <input class="form-control" id="message-text" type="password" id="PasswordInput">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="loginButtonClick()">Login</button>
+      </div>
+    </div>
+  </div>
+</div>
     <!--Navigation Bar-->
         <div class="container pt-2">
             <div class="col-9  mx-auto">
@@ -41,8 +67,8 @@
                             </li>
                         </ul>
                         <div>
-                            <button type="button" class="btn btn-outline-danger">Logout</button>
-                            <button type="button" class="btn btn-outline-success">Register</button>
+                            <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Login</button>
+                            <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Register</button>
                         </div>
                     </div>
                 </div>
@@ -159,6 +185,15 @@
                 }).catch((err) => {
                     console.log(err);
                 });
+
+                function loginButtonClick(){
+                    const username=document.getElementById("UsernameInput").value;
+                    const password=document.getElementById("PasswordInput").value;
+                    console.log(username,password);
+                    
+                }
+
+
             </script>
 
 
