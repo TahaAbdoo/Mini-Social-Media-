@@ -35,7 +35,7 @@
           </div>
           <div class="mb-3">
             <label for="message-text" class="col-form-label">Password</label>
-            <input class="form-control" id="message-text" type="password" id="PasswordInput">
+            <input class="form-control" type="password" id="PasswordInput">
           </div>
         </form>
       </div>
@@ -132,8 +132,10 @@
         
         
 </body>
-            <script>
-                axios.get("https://tarmeezacademy.com/api/v1/posts?limit=50")
+            <script> 
+
+            const baseUrl="https://tarmeezacademy.com/api/v1";
+                axios.get(`${baseUrl}/posts?limit=50`)
                 .then((res) => {
                     const posts=res.data.data;
                     for (const post of posts) {
@@ -189,7 +191,16 @@
                 function loginButtonClick(){
                     const username=document.getElementById("UsernameInput").value;
                     const password=document.getElementById("PasswordInput").value;
-                    console.log(username,password);
+                    console.log(username);
+                    console.log(password);
+                    const params={
+                        "username":username,
+                        "password":password
+                    }
+                    const url=`${baseUrl}/login`;
+                    axios.post(url,params).then(res=>{
+                        console.log(res.data);
+                    })
                     
                 }
 
