@@ -20,7 +20,7 @@
     </style>
 </head>
 <body>
-    <div id="liveAlertPlaceholder" class="bg-primary fixed z-3 bottom-0 right-0"></div>
+    <div id="liveAlertPlaceholder" class=" position-fixed z-3 bottom-0 rigt-3 show fade m-3"></div>
 
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -68,7 +68,7 @@
                                 <a class="nav-link" href="#">Profile</a>
                             </li>
                         </ul>
-                        <div>
+                        <div id = "loginDiv" class="flex">
                             <!--non-logged in-->
                             <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal" id="login-btn">Login</button>
                             <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal" id="Register-btn">Register</button>
@@ -76,7 +76,7 @@
 
 
 
-                         <div>
+                         <div id="logoutDiv">
                             <!---logged in-->
                             <button onclick="logout()" type="button" class="btn btn-outline-danger" data-bs-target="#exampleModal" id="Logout">Logout</button>
                         </div>
@@ -163,15 +163,14 @@
                             const createdAt= post.created_at;
                             const tags= post.tags;
                             let tagHtml="";
-                            for(const tag of tags){
-                                const tagHtml=+ ` 
-                                <div class="tags rounded bg-dark text-white p-1 my-1 " style="width:fit-content;">
-                                
-                                   ${tag}
-                            
-                                </div>
+                            //for(const tag of tags){
+                                 tagHtml= ` 
+                                <span id=${post.id}>
+                              
+                                  
+                                </span>
                                 `
-                            }
+                            //}
                           document.getElementById("posts").innerHTML+=`
                            
                     <div class="card shadow ">
@@ -231,12 +230,12 @@
                         const modalInstance=bootstrap.Modal.getInstance(modal);
                         modalInstance.hide();
                        // alert("user Loged in successfully")
-                        showSuccessAlert();
+                        showSuccessAlert("user Loged in successfully","success");
                         setupNavbarUi();
                     })
                     
                 }
-                function showSuccessAlert(){
+                function showSuccessAlert(message,type){
             const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
                 const appendAlert = (message, type) => {
                 const wrapper = document.createElement('div')
@@ -250,36 +249,40 @@
                 alertPlaceholder.append(wrapper)
                 }
 
-                const alertTrigger = document.getElementById('liveAlertBtn')
-                if (alertTrigger) {
-                alertTrigger.addEventListener('click', () => {
-                    appendAlert('Nice, you triggered this alert message!', 'success')
-                })
-                }
+              
+                    appendAlert(message, type)
+            /* todo:hide alert automaticly 
+                setTimeout(()=>{
+                     const alertToHide =bootstrap.Alert.getOrCreateInstance('#liveAlertPlaceholder')
+                        alertToHide.dispose()
+                     },3000)   */
                 }
                 function setupNavbarUi(){
                      const token=localStorage.getItem("token");//null
-                     const loginBtn=document.getElementById("login-btn");
-                     const logout =document.getElementById("Logout");
+                     const loginDiv=document.getElementById("loginDiv");
+                     const logoutDiv =document.getElementById("logoutDiv");
                      const RegisterBtn=document.getElementById("Register-btn");
-                     
+                     const loginBtn=document.getElementById("login-btn");
                      if(token==null){//user is guest
                         loginBtn.style.display="inline-block"
                         RegisterBtn.style.display="inline-block";
-                        logout.style.display="none";
+                        //loginDiv.style.display="flex";
+                        logoutDiv.style.display="none";
                         
                      }
                      else{
                         loginBtn.style.display="none"
-                        RegisterBtn.style.display="none"
-                        logout.style.display="block";
+                        RegisterBtn.style.display="none";
+                        //loginDiv.style.display="flex";
+                        logoutDiv.style.display="block";
                      }
 
                 }
                 function logout(){
                     localStorage.removeItem("token");
                     localStorage.removeItem("user");
-                    alert("logout SuccesFully");
+                    //alert("logout SuccesFully");
+                    showSuccessAlert("logout SuccesFully","danger");
                     setupNavbarUi()
                 }
             </script>
