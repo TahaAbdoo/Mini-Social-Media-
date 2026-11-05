@@ -16,14 +16,17 @@
         }
         .card{
             margin-top: 40px;
-        }
+        } #liveAlertPlaceholder {
+    z-index: 2000 !important;
+}
     </style>
 </head>
 <body>
-    <div id="liveAlertPlaceholder" class=" position-fixed z-3 bottom-0 rigt-3 show fade m-3"></div>
+    <div id="liveAlertPlaceholder" class=" position-fixed z-3 bottom-0 rigt-3 show fade m-3" style="z-index: 1090;"></div>
 
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+
+                 <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="exampleModalLabel">Login</h1>
@@ -47,6 +50,57 @@
       </div>
     </div>
   </div>
+
+
+
+
+        </div>
+ 
+
+  <div class="modal fade" id="RegisterModel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+                 <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Register</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+            
+
+             <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Name</label>
+            <input type="text" class="form-control" id="NameInput">
+          </div>
+
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Username</label>
+            <input type="text" class="form-control" id="RegisterUserNameInput">
+          </div>
+          <div class="mb-3">
+            <label for="message-text" class="col-form-label">Password</label>
+            <input class="form-control" type="password" id="RegisterPasswordInput">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="registerBtnClick()">Register</button>
+      </div>
+    </div>
+  </div>
+
+
+
+
+        </div>
+
+
+
+            
+
+
 </div>
     <!--Navigation Bar-->
         <div class="container pt-2">
@@ -71,7 +125,7 @@
                         <div id = "loginDiv" class="flex">
                             <!--non-logged in-->
                             <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal" id="login-btn">Login</button>
-                            <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal" id="Register-btn">Register</button>
+                            <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#RegisterModel"  id="Register-btn">Register</button>
                         </div>
 
 
@@ -165,7 +219,7 @@
                             let tagHtml="";
                             //for(const tag of tags){
                                  tagHtml= ` 
-                                <span id=${post.id}>
+                                <span id=post-tags-${post.id}>
                               
                                   
                                 </span>
@@ -208,6 +262,25 @@
                             
                         
                            `
+                           document.getElementById(`post-tags-${post.id}`).innerHTML=""; 
+                           for(tag of tags){
+                            const tagsContent=`
+                                <button class="btn btn-sm rounded-5"
+                                style="background-color:grey;
+                                color : white"
+                                
+                                >
+                                    
+                                    ${tags.name}
+                                    
+                                    
+                                    </button>
+                            
+                            
+                            
+                            `
+                            document.getElementById("post-tags-${post.id}").innerHTML+=tagsContent
+                           }
                 
                     }
                 }).catch((err) => {
@@ -222,7 +295,8 @@
                         "password":password
                     }
                     const url=`${baseUrl}/login`;
-                    axios.post(url,params).then(res=>{
+                    axios.post(url,params)
+                    .then(res=>{
                         console.log(res.data.token);
                         localStorage.setItem("token",res.data.token)
                         localStorage.setItem("currentUser",res.data.user)
@@ -230,12 +304,56 @@
                         const modalInstance=bootstrap.Modal.getInstance(modal);
                         modalInstance.hide();
                        // alert("user Loged in successfully")
-                        showSuccessAlert("user Loged in successfully","success");
+                        showAlert("user Loged in successfully","success");
                         setupNavbarUi();
+                    }).catch((error)=>{console.log("The ERROR! =>", error);})
+                }
+                
+                function registerBtnClick(){
+                    
+                    const name= document.getElementById("NameInput").value
+                    const username=document.getElementById("RegisterUserNameInput").value;
+                    const password=document.getElementById("RegisterPasswordInput").value;
+                    console.log(name,username,password);
+                    const params={
+                        "name":name,
+                        "username":username,
+                        "password":password
+                    }
+                    const url=`${baseUrl}/register`;
+                    axios.post(url,params)
+                    .then(res=>{
+                        console.log(res.data.token);
+                        localStorage.setItem("token",res.data.token)
+                        localStorage.setItem("currentUser",res.data.user)
+                        const modal=document.getElementById("RegisterModel");
+                        const modalInstance=bootstrap.Modal.getInstance(modal);
+                        modalInstance.hide();
+                       // alert("user Loged in successfully")
+                        showAlert("New User Registered  successfully","success");
+                        setupNavbarUi();
+                    }).catch((error)=>{
+                        const message =error.response.data.message;
+                        
+                        showAlert(message,"danger")
                     })
                     
+
+
+
                 }
-                function showSuccessAlert(message,type){
+                
+                  function logout(){
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user");
+                    //alert("logout SuccesFully");
+                    showAlert("logout SuccesFully","danger");
+                    setupNavbarUi()
+                }
+
+
+
+                function showAlert(message,type){
             const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
                 const appendAlert = (message, type) => {
                 const wrapper = document.createElement('div')
@@ -278,13 +396,7 @@
                      }
 
                 }
-                function logout(){
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("user");
-                    //alert("logout SuccesFully");
-                    showSuccessAlert("logout SuccesFully","danger");
-                    setupNavbarUi()
-                }
+              
             </script>
 
 
